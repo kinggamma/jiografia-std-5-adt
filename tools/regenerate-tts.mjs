@@ -34,7 +34,19 @@
 import fs from "node:fs"
 import path from "node:path"
 import crypto from "node:crypto"
+import { spawnSync } from "node:child_process"
 import { fileURLToPath, pathToFileURL } from "node:url"
+
+function readLocalEnvValue(file, name) {
+  if (!fs.existsSync(file)) return null
+  const line = fs.readFileSync(file, "utf8").split(/\r?\n/).find((entry) => entry.startsWith(`${name}=`))
+  if (!line) return null
+  const value = line.slice(name.length + 1).trim()
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    return value.slice(1, -1)
+  }
+  return value
+}
 
 // --------------------------------------------------------------------------
 // Shared logic mirrored from packages/pipeline/src/speech.ts (keep in sync)
@@ -213,6 +225,17 @@ function wrapPcmAsWave(pcmBytes) {
   return Buffer.concat([header, Buffer.from(pcmBytes)])
 }
 
+function transcodeWavToMp3(wavBytes) {
+  const result = spawnSync(
+    "ffmpeg",
+    ["-hide_banner", "-loglevel", "error", "-f", "wav", "-i", "pipe:0", "-codec:a", "libmp3lame", "-b:a", "64k", "-f", "mp3", "pipe:1"],
+    { input: wavBytes, maxBuffer: 64 * 1024 * 1024 },
+  )
+  if (result.error) throw new Error(`ffmpeg failed: ${result.error.message}`)
+  if (result.status !== 0) throw new Error(`ffmpeg failed: ${String(result.stderr || "").trim()}`)
+  return result.stdout
+}
+
 function buildGeminiSpeechPrompt(transcript, instructions) {
   const performance = instructions && instructions.trim()
   if (!performance) return transcript
@@ -248,8 +271,8 @@ function extractGeminiAudioData(payload) {
 
 async function synthesizeGemini({ apiKey, model, voice, input, responseFormat, instructions, temperature, seed }) {
   const outputFormat = String(responseFormat).toLowerCase()
-  if (outputFormat !== "wav" && outputFormat !== "pcm") {
-    throw new Error(`Gemini TTS only supports wav output. Received: ${responseFormat}`)
+  if (outputFormat !== "wav" && outputFormat !== "pcm" && outputFormat !== "mp3") {
+    throw new Error(`Gemini TTS only supports wav, pcm, or mp3 output. Received: ${responseFormat}`)
   }
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`
   const call = async (transcript) => {
@@ -291,7 +314,9 @@ async function synthesizeGemini({ apiKey, model, voice, input, responseFormat, i
   }
   if (!audioData) throw new Error("Gemini TTS response did not include audio data")
   const pcm = new Uint8Array(Buffer.from(audioData, "base64"))
-  return outputFormat === "pcm" ? Buffer.from(pcm) : wrapPcmAsWave(pcm)
+  if (outputFormat === "pcm") return Buffer.from(pcm)
+  const wav = wrapPcmAsWave(pcm)
+  return outputFormat === "mp3" ? transcodeWavToMp3(wav) : wav
 }
 
 function makeSynthesizer(provider, providerCfg, apiKey, geminiOpts) {
@@ -402,6 +427,7 @@ async function main() {
         "  --dry-run    Report what would change without calling the TTS API.",
         "  --lang <c>   Only process one language (e.g. --lang es-uy).",
         "  --id <textId>  Only process a single text unit (e.g. --id pg001_n0001).",
+        "  --instructions <text>  Override and persist TTS guidance for the selected unit.",
         "  --force      Re-record even if the text is unchanged (respects --lang/--id).",
       ].join("\n"),
     )
@@ -410,7 +436,7 @@ async function main() {
 
   const dryRun = args.includes("--dry-run")
   const force = args.includes("--force")
-  const valueFlags = new Set(["--lang", "--id"])
+  const valueFlags = new Set(["--lang", "--id", "--instructions"])
   const flagValue = (name) => {
     const i = args.indexOf(name)
     if (i === -1) return null
@@ -422,6 +448,10 @@ async function main() {
   }
   const onlyLang = flagValue("--lang")
   const onlyId = flagValue("--id")
+  const instructionOverride = flagValue("--instructions")
+  if (instructionOverride && !onlyId) {
+    throw new Error("--instructions requires --id so pronunciation guidance cannot affect a whole book accidentally.")
+  }
 
   const positional = args.filter((a, i) => !a.startsWith("--") && !(i > 0 && valueFlags.has(args[i - 1])))
   const scriptDir = path.dirname(fileURLToPath(import.meta.url))
@@ -495,7 +525,10 @@ async function main() {
       const provider = settings.provider
       const providerCfg = (config.providers && config.providers[provider]) || {}
       const apiKeyEnv = providerCfg.apiKeyEnv || (provider === "gemini" ? "GEMINI_API_KEY" : "OPENAI_API_KEY")
-      const apiKey = process.env[apiKeyEnv]
+      // Load only the selected TTS provider key from the local bundle. Do not
+      // import every .env value: optional services (for example Whisper) must
+      // remain disabled unless their keys are explicitly exported by the user.
+      const apiKey = process.env[apiKeyEnv] || readLocalEnvValue(path.join(bundleRoot, ".env"), apiKeyEnv)
       if (!apiKey) throw new Error(`Environment variable ${apiKeyEnv} is not set (needed for ${provider} TTS).`)
       const synthesize = makeSynthesizer(provider, providerCfg, apiKey, {
         temperature: manifestLang.geminiTemperature,
@@ -584,9 +617,12 @@ async function main() {
           existingFormat,
         )
         const configOverridesEntry = !sameSpeechSettings(configSettings, entryConfigBaseline)
-        const settings = configOverridesEntry
+        const inheritedSettings = configOverridesEntry
           ? configSettings
           : normalizeSpeechSettings(storedEntrySettings[textId] || configSettings, existingFormat)
+        const settings = instructionOverride && textId === onlyId
+          ? { ...inheritedSettings, instructions: instructionOverride }
+          : inheritedSettings
         const fmt = assertSafeSegment(settings.format, SAFE_FORMAT_RE, `audio format for ${textId}`)
         const fileName = existingFileName && fmtOf(existingFileName) === fmt
           ? existingFileName

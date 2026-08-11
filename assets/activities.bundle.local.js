@@ -41377,7 +41377,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   reserveImageSpace,
                   accentDark,
                   onChange: onBlankChange
-                }
+                },
+                currentStep.id
               ) : activity.kind === "multiple-choice" ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
                 McStepView,
                 {
@@ -41393,7 +41394,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   accentSoft: palette.accentSoft,
                   optionColumns: activity.theme?.optionColumns,
                   onSelect: onSelectOption
-                }
+                },
+                currentStep.id
               ) : activity.kind === "open-ended" ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
                 OpenEndedStepView,
                 {
@@ -41406,7 +41408,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   reserveImageSpace,
                   accentDark,
                   onChange: onOpenEndedChange
-                }
+                },
+                currentStep.id
               ) : /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
                 UnderlineStepView,
                 {
@@ -41420,7 +41423,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   accentDark,
                   accentSoft: palette.accentSoft,
                   onToggle: onToggleToken
-                }
+                },
+                currentStep.id
               ),
               /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
                 "div",
@@ -41697,6 +41701,7 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
         "p",
         {
           className: "mb-5 text-center text-xl font-semibold md:text-2xl",
+          "data-stepper-prompt": "true",
           ...step.prompt?.dataId ? { "data-id": step.prompt.dataId } : {},
           children: promptText
         }
@@ -41877,6 +41882,7 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
         "p",
         {
           className: "mb-5 text-center text-xl font-semibold md:text-2xl",
+          "data-stepper-prompt": "true",
           ...step.prompt?.dataId ? { "data-id": step.prompt.dataId } : {},
           children: promptText
         }
@@ -41952,6 +41958,7 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
         {
           className: "text-center text-2xl leading-relaxed md:text-3xl",
           style: { color: INK },
+          "data-stepper-prompt": "true",
           ...step.dataId ? { "data-id": step.dataId } : {},
           children: step.tokens.map((token, i) => {
             if (!token.itemId) {

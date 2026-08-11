@@ -12,7 +12,7 @@
       "model": "gemini-2.5-flash-preview-tts",
       "voice": "Kore",
       "instructions": "Speak clearly, warmly, and naturally in Swahili.",
-      "format": "wav",
+      "format": "mp3",
       "wordHighlighting": false
     }
   },

@@ -45120,14 +45120,38 @@ function useAtomValueWithDelay<Value>(
     const speedRef = (0, import_react20.useRef)(speed);
     const volumeRef = (0, import_react20.useRef)(volume);
     const initialResumeRef = (0, import_react20.useRef)(isPlaying || autoplayMode);
+    const playableIdsRef = (0, import_react20.useRef)("");
+    const activeStepperPromptRef = (0, import_react20.useRef)(null);
+    const [domRevision, setDomRevision] = (0, import_react20.useState)(0);
     wordHighlightModeRef.current = wordHighlightMode;
     speedRef.current = speed;
     volumeRef.current = volume;
+    (0, import_react20.useEffect)(() => {
+      const content = document.getElementById("content");
+      if (!content || typeof MutationObserver === "undefined") return;
+      const refreshPlayableIds = () => {
+        const signature = Array.from(content.querySelectorAll("[data-id]"))
+          .map((el) => el.getAttribute("data-id") || "")
+          .join("\0");
+        if (signature === playableIdsRef.current) return;
+        playableIdsRef.current = signature;
+        setDomRevision((revision) => revision + 1);
+      };
+      refreshPlayableIds();
+      const observer = new MutationObserver(refreshPlayableIds);
+      observer.observe(content, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["data-id"]
+      });
+      return () => observer.disconnect();
+    }, []);
     const items = (0, import_react20.useMemo)(() => {
       const all = gatherPlayableItems(audioFiles, translations, easyReadMode);
       if (describeImagesMode) return all;
       return all.filter((item) => item.el.tagName.toLowerCase() !== "img");
-    }, [audioFiles, translations, easyReadMode, describeImagesMode]);
+    }, [audioFiles, translations, easyReadMode, describeImagesMode, domRevision]);
     const teardownActive = (0, import_react20.useCallback)(() => {
       const active = activeRef.current;
       if (!active) return;
@@ -45305,6 +45329,16 @@ function useAtomValueWithDelay<Value>(
       hasAutoStartedRef.current = true;
       playAtIndex(0);
     }, [items.length, readAloudMode, playAtIndex]);
+    (0, import_react20.useEffect)(() => {
+      const prompt = document.querySelector("[data-stepper-root] [data-stepper-prompt][data-id]");
+      const promptId = prompt?.getAttribute("data-id") || null;
+      if (!promptId) return;
+      const previousPromptId = activeStepperPromptRef.current;
+      activeStepperPromptRef.current = promptId;
+      if (previousPromptId === null || previousPromptId === promptId || !readAloudMode) return;
+      const promptIndex = items.findIndex((item) => item.id === promptId && item.el === prompt);
+      if (promptIndex >= 0) playAtIndex(promptIndex);
+    }, [domRevision, items, readAloudMode, playAtIndex]);
     (0, import_react20.useEffect)(() => {
       if (readAloudMode) return;
       stopAndClear();
@@ -58218,7 +58252,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   reserveImageSpace,
                   accentDark,
                   onChange: onBlankChange
-                }
+                },
+                currentStep.id
               ) : activity.kind === "multiple-choice" ? /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(
                 McStepView,
                 {
@@ -58234,7 +58269,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   accentSoft: palette.accentSoft,
                   optionColumns: activity.theme?.optionColumns,
                   onSelect: onSelectOption
-                }
+                },
+                currentStep.id
               ) : activity.kind === "open-ended" ? /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(
                 OpenEndedStepView,
                 {
@@ -58247,7 +58283,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   reserveImageSpace,
                   accentDark,
                   onChange: onOpenEndedChange
-                }
+                },
+                currentStep.id
               ) : /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(
                 UnderlineStepView,
                 {
@@ -58261,7 +58298,8 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
                   accentDark,
                   accentSoft: palette.accentSoft,
                   onToggle: onToggleToken
-                }
+                },
+                currentStep.id
               ),
               /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(
                 "div",
@@ -58538,6 +58576,7 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
         "p",
         {
           className: "mb-5 text-center text-xl font-semibold md:text-2xl",
+          "data-stepper-prompt": "true",
           ...step.prompt?.dataId ? { "data-id": step.prompt.dataId } : {},
           children: promptText
         }
@@ -58718,6 +58757,7 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
         "p",
         {
           className: "mb-5 text-center text-xl font-semibold md:text-2xl",
+          "data-stepper-prompt": "true",
           ...step.prompt?.dataId ? { "data-id": step.prompt.dataId } : {},
           children: promptText
         }
@@ -58793,6 +58833,7 @@ ${OPTION_BASE} [${MARK_ATTR}="incorrect"] {
         {
           className: "text-center text-2xl leading-relaxed md:text-3xl",
           style: { color: INK },
+          "data-stepper-prompt": "true",
           ...step.dataId ? { "data-id": step.dataId } : {},
           children: step.tokens.map((token, i) => {
             if (!token.itemId) {
