@@ -15,7 +15,6 @@
   "pg002_n0013": "pg002_n0013.mp3",
   "pg002_n0014": "pg002_n0014.mp3",
   "pg002_n0015": "pg002_n0015.mp3",
-  "pg002_n0016": "pg002_n0016.mp3",
   "pg002_n0018": "pg002_n0018.mp3",
   "pg002_n0019": "pg002_n0019.mp3",
   "pg003_n0002": "pg003_n0002.mp3",
@@ -2460,7 +2459,6 @@
   "pg002_n0013_easy_read": "pg002_n0013_easy_read.mp3",
   "pg002_n0014_easy_read": "pg002_n0014_easy_read.mp3",
   "pg002_n0015_easy_read": "pg002_n0015_easy_read.mp3",
-  "pg002_n0016_easy_read": "pg002_n0016_easy_read.mp3",
   "pg002_n0018_easy_read": "pg002_n0018_easy_read.mp3",
   "pg002_n0019_easy_read": "pg002_n0019_easy_read.mp3",
   "pg003_n0005_easy_read": "pg003_n0005_easy_read.mp3",
@@ -4299,5 +4297,10 @@
   "pg092_n0046": "pg092_n0046.mp3",
   "pg072_n0020_easy_read": "pg072_n0020_easy_read.mp3",
   "pg072_n0062_easy_read": "pg072_n0062_easy_read.mp3",
-  "pg092_n0053": "pg092_n0053.mp3"
+  "pg092_n0053": "pg092_n0053.mp3",
+  "pg030_n0061": "pg030_n0061.mp3",
+  "pg030_n0062": "pg030_n0062.mp3",
+  "pg030_n0063": "pg030_n0063.mp3",
+  "pg040_n0024": "pg040_n0024.mp3",
+  "pg040_n0025": "pg040_n0025.mp3"
 }
