@@ -16,7 +16,7 @@
         "pg001_n0005": "42bf7f0369bf8d789f15addf9d9b5ab8deea188aab54c9c14b318809392f8057",
         "pg002_n0003": "f2a43af8cf4b2551b2272b942b723dde5604295e09f549389f6e1320bc67ce63",
         "pg002_n0004": "0b32e0a2cfe6deb9bb88e66e4722004c030c0abde3508798b96b25bcffcbc3fa",
-        "pg002_n0005": "203703f5ba3d7cab72e0347e1c5440570bf4e1eaf38f111b31dafe45bf11a65a",
+        "pg002_n0005": "f983b53645d19908512e26878e879e3ae0d9445fb743cb638cea449658865350",
         "pg002_n0007": "42bf7f0369bf8d789f15addf9d9b5ab8deea188aab54c9c14b318809392f8057",
         "pg002_n0008": "0f7c4e7c87aab6e450557ed6ce55eca484d2a2beb527fd96feee29a5cce5246b",
         "pg002_n0009": "1b6ed587f4bc9923827b0f2ae05e76e5b73c9494eebe3119f200ce18ce374350",
@@ -4380,7 +4380,7 @@
           "provider": "gemini",
           "model": "gemini-2.5-flash-preview-tts",
           "voice": "Kore",
-          "instructions": "Speak clearly, warmly, and naturally in Swahili.",
+          "instructions": "Soma kila tarakimu (namba 0-9) kivyake, moja baada ya nyingine, bila kuunganisha wala kubadilisha tarakimu yoyote. Sitisha kidogo baina ya kila kikundi kilichotenganishwa na koma. Hii si mwaka wala kiasi cha fedha - soma kila namba moja moja kwa uwazi na taratibu.",
           "format": "mp3"
         },
         "pg002_n0007": {
