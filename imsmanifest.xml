@@ -190,9 +190,7 @@
       <file href="content/i18n/sw-TZ/video/page_83.mp4" />
       <file href="content/i18n/sw-TZ/video/page_87.mp4" />
       <file href="content/i18n/sw-TZ/video/page_94.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg001_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg001_sec002.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg002_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg003_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg004_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg005_sec001.mp4" />
@@ -232,9 +230,6 @@
       <file href="content/i18n/sw-TZ/video/sl_pg035_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg036_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg037_sec001.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg037_sec002.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg038_sec001.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg038_sec002.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg039_sec002.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg040_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg041_sec001.mp4" />
@@ -255,12 +250,6 @@
       <file href="content/i18n/sw-TZ/video/sl_pg053_sec002.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg054_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg055_sec001.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg055_sec002.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg056_sec001.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg057_sec001.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg058_sec001.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg059_sec001.mp4" />
-      <file href="content/i18n/sw-TZ/video/sl_pg059_sec002.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg060_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg061_sec001.mp4" />
       <file href="content/i18n/sw-TZ/video/sl_pg062_sec001.mp4" />
@@ -314,6 +303,17 @@
       <file href="content/navigation/nav.html" />
       <file href="content/pages.json" />
       <file href="content/toc.json" />
+      <file href="content/i18n/sw-TZ/video/page_1.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_3.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_44.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_45.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_46.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_71.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_72.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_73.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_74.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_75.mp4" />
+      <file href="content/i18n/sw-TZ/video/page_76.mp4" />
 </resource>
   </resources>
 
